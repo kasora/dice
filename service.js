@@ -276,6 +276,7 @@ exports.save = async function (message, sender) {
   let messageArray = message.split(/[ \.\n\t:;；]/g).filter(el => el);
   delete userInfo._id;
   userInfo.saveName = messageArray[0];
+  if (!userInfo.saveName) return '存档一定要有名称哦。'
   await mongo.Save.deleteMany({
     id: sender.user_id,
     saveName: messageArray[0],
@@ -294,7 +295,7 @@ exports.save = async function (message, sender) {
 
 exports.listSave = async function (message, sender) {
   let saveList = await mongo.Save.find({ id: sender.user_id }, { saveName: 1 }).toArray();
-  return `你目前存在如下存档: \n${saveList.map(el => el.saveName).join('\n')}`
+  return saveList.length ?`你目前存在如下存档: \n${saveList.map(el => el.saveName).join('\n')}`:'你还没有任何存档'
 }
 
 exports.delSave = async function (message, sender) {
