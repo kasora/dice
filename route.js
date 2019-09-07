@@ -58,7 +58,7 @@ exports.listsave = {
 }
 
 exports.delsave = {
-  label: '删除指定的存档。例如.delsave 间谍 狂战士',
+  label: '删除指定的存档，可多选。例如.delsave 间谍 狂战士',
   handler: service.delSave,
 }
 
