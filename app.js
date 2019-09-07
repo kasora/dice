@@ -16,9 +16,11 @@ app.use('/', async (req, res, next) => {
 })
 
 app.use('/', async (req, res, next) => {
+  req.body.message = req.body.message.split(/[ \n\t:;；]/g).filter(el => el);
   for (let routeName of Object.keys(routes)) {
     let route = routes[routeName]
-    if (RegExp(`^\.${routeName}`).test(req.body.message)) {
+    if (RegExp(`^\.${routeName}$`).test(req.body.message[0])) {
+      req.body.message = req.body.message.join(' ')
       console.log(`username: `, req.body.sender.nickname);
       console.log(`message : `, req.body.message);
       let message = req.body.message.split(' ');

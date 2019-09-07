@@ -29,6 +29,7 @@ exports.get = async function (message, sender) {
   let messageArray = message.split(/[ \.\n\t:;；]/g).filter(el => el);
 
   let userInfo = await mongo.User.findOne({ id: sender.user_id });
+  if (!userInfo) return '你目前还没有录入任何属性';
   delete userInfo._id;
   delete userInfo.id;
   let opt = [];
@@ -62,6 +63,7 @@ exports.rc = async function (message, sender) {
   let params = messageArray[0];
   let opt = ''
   if (!userInfo[params]) {
+    if (!defaultSkill[params]) return '不存在这个技能，请检查技能名称是否正确。\n请细化到次级分类，例如射击:弓术，你只需要输入.rc 弓术即可。\n如果武器为步枪/霰弹枪。你只需要输入.rc 步枪或.rc 霰弹枪。'
     opt += '你没有这个技能/属性。采用默认值进行判定。\n';
     userInfo[params] = defaultSkill[params];
   }
@@ -267,6 +269,63 @@ exports.dec = async function (message, sender) {
   let opt = [];
   Object.keys(userBody).forEach(key => opt.push(`${key}: ${userBody[key]}`));
   return `扣除成功，当前数值为\n${opt.join('\n')}`
+}
+
+exports.save = async function (message, sender) {
+  let userInfo = await mongo.User.findOne({ id: sender.user_id });
+  let messageArray = message.split(/[ \.\n\t:;；]/g).filter(el => el);
+  delete userInfo._id;
+  userInfo.saveName = messageArray[0];
+  await mongo.Save.deleteMany({
+    id: sender.user_id,
+    saveName: messageArray[0],
+  })
+  await mongo.Save.updateOne(
+    {
+      id: sender.user_id,
+      saveName: messageArray[0],
+    },
+    { $set: userInfo },
+    { upsert: true }
+  );
+
+  return `存档成功，你随时可以通过.import ${messageArray[0]}取出这份存档。`
+}
+
+exports.listSave = async function (message, sender) {
+  let saveList = await mongo.Save.find({ id: sender.user_id }, { saveName: 1 }).toArray();
+  return `你目前存在如下存档: \n${saveList.map(el => el.saveName).join('\n')}`
+}
+
+exports.delSave = async function (message, sender) {
+  let messageArray = message.split(/[ \.\n\t:;；]/g).filter(el => el);
+  await mongo.Save.deleteMany({ saveName: { $in: messageArray } });
+  return `指定存档已删除，` + await exports.listSave('', sender);
+}
+
+exports.import = async function (message, sender) {
+  let messageArray = message.split(/[ \.\n\t:;；]/g).filter(el => el);
+  await mongo.User.deleteOne({
+    id: sender.user_id,
+  })
+  let userInfo = await mongo.Save.findOne(
+    {
+      id: sender.user_id,
+      saveName: messageArray[0],
+    }
+  );
+  if (!userInfo) return '没有找到指定存档。' + await exports.listSave('', sender);
+  delete userInfo.saveName;
+  delete userInfo._id;
+  await mongo.User.updateOne(
+    {
+      id: sender.user_id,
+    },
+    { $set: userInfo },
+    { upsert: true }
+  );
+
+  return `取出成功，你的人物卡已被覆盖。` + await exports.get('', sender);
 }
 
 exports.arknights = async function (message, sender) {

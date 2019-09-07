@@ -47,6 +47,26 @@ exports.dec = {
   handler: service.dec,
 }
 
+exports.save = {
+  label: '存档当前的人物状态。指定参数为存档名称。例如.save 间谍',
+  handler: service.save,
+}
+
+exports.listsave = {
+  label: '列出当前存在的所有存档。不接受参数。例如.listsave',
+  handler: service.listSave,
+}
+
+exports.delsave = {
+  label: '删除指定的存档。例如.delsave 间谍 狂战士',
+  handler: service.delSave,
+}
+
+exports.import = {
+  label: '导入人物卡，覆盖当前的人物状态。指定参数为存档名称。例如.import 间谍',
+  handler: service.import,
+}
+
 exports.arknights = {
   label: '夹带私货。给入公开招募标签，给出最优选择。例如.arknights 男性干员 防护 重装干员 医疗干员 生存',
   handler: service.arknights,
