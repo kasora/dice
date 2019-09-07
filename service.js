@@ -6,6 +6,7 @@ let mongo = require('./mongo');
 let utils = require('./utils');
 let routes = require('./route');
 let arknightsMemberData = require('./data/arknights_member.json');
+let defaultSkill = require('./data/default_skill.json');
 
 
 exports.set = async function (message, sender) {
@@ -59,15 +60,19 @@ exports.rc = async function (message, sender) {
   let userInfo = await mongo.User.findOne({ id: sender.user_id });
   let messageArray = message.split(/[ \.\n\t:;；]/g).filter(el => el);
   let params = messageArray[0];
-  if (!userInfo[params]) return '你没有这个技能/属性。';
+  let opt = ''
+  if (!userInfo[params]) {
+    opt += '你没有这个技能/属性。采用默认值进行判定。\n';
+    userInfo[params] = defaultSkill[params];
+  }
   let randomNumber = Math.ceil(Math.random() * 100);
-  if (randomNumber <= userInfo[params] && randomNumber <= 1) return `${params}大成功: ${randomNumber} / ${userInfo[params]}`
-  if (randomNumber <= userInfo[params] / 5) return `${params}极限成功: ${randomNumber} / ${userInfo[params]}`
-  if (randomNumber <= userInfo[params] / 2) return `${params}艰难成功: ${randomNumber} / ${userInfo[params]}`
-  if (randomNumber <= userInfo[params]) return `${params}成功: ${randomNumber} / ${userInfo[params]}`
+  if (randomNumber <= userInfo[params] && randomNumber <= 1) return opt + `${params}大成功: ${randomNumber} / ${userInfo[params]}`
+  if (randomNumber <= userInfo[params] / 5) return opt + `${params}极限成功: ${randomNumber} / ${userInfo[params]}`
+  if (randomNumber <= userInfo[params] / 2) return opt + `${params}艰难成功: ${randomNumber} / ${userInfo[params]}`
+  if (randomNumber <= userInfo[params]) return opt + `${params}成功: ${randomNumber} / ${userInfo[params]}`
 
-  if (randomNumber > userInfo[params] && randomNumber >= 95) return `${params}大失败: ${randomNumber} / ${userInfo[params]}`
-  if (randomNumber > userInfo[params]) return `${params}失败: ${randomNumber} / ${userInfo[params]}`
+  if (randomNumber > userInfo[params] && randomNumber >= 95) return opt + `${params}大失败: ${randomNumber} / ${userInfo[params]}`
+  if (randomNumber > userInfo[params]) return opt + `${params}失败: ${randomNumber} / ${userInfo[params]}`
 }
 
 exports.rd = async function (message, sender) {
