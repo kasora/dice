@@ -63,7 +63,7 @@ exports.rc = async function (message, sender) {
   let params = messageArray[0];
   let opt = ''
   if (!userInfo[params]) {
-    if (!defaultSkill[params]) return '不存在这个技能，请检查技能名称是否正确。\n请细化到次级分类，例如射击:弓术，你只需要输入.rc 弓术即可。\n如果武器为步枪/霰弹枪。你只需要输入.rc 步枪或.rc 霰弹枪。'
+    if (defaultSkill[params] === undefined) return '不存在这个技能，请检查技能名称是否正确。\n请细化到次级分类，例如射击:弓术，你只需要输入.rc 弓术即可。\n如果武器为步枪/霰弹枪。你只需要输入.rc 步枪或.rc 霰弹枪。'
     opt += '你没有这个技能/属性。采用默认值进行判定。\n';
     userInfo[params] = defaultSkill[params];
   }
