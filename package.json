@@ -1,0 +1,16 @@
+{
+  "name": "dice",
+  "version": "1.0.0",
+  "repository": "kasora/dice",
+  "description": "COC/DND 跑团骰子",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongodb": "^3.3.2",
+    "superagent": "^5.1.0"
+  },
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "kasora <kasorasun@gmail.com>"
+}
