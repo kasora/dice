@@ -62,8 +62,8 @@ exports.rc = async function (message, sender) {
   if (!userInfo[params]) return '你没有这个技能/属性。';
   let randomNumber = Math.ceil(Math.random() * 100);
   if (randomNumber <= userInfo[params] && randomNumber <= 1) return `${params}大成功: ${randomNumber} / ${userInfo[params]}`
-  if (randomNumber <= userInfo[params] / 5) return `${params}极难成功: ${randomNumber} / ${userInfo[params]}`
-  if (randomNumber <= userInfo[params] / 2) return `${params}困难成功: ${randomNumber} / ${userInfo[params]}`
+  if (randomNumber <= userInfo[params] / 5) return `${params}极限成功: ${randomNumber} / ${userInfo[params]}`
+  if (randomNumber <= userInfo[params] / 2) return `${params}艰难成功: ${randomNumber} / ${userInfo[params]}`
   if (randomNumber <= userInfo[params]) return `${params}成功: ${randomNumber} / ${userInfo[params]}`
 
   if (randomNumber > userInfo[params] && randomNumber >= 95) return `${params}大失败: ${randomNumber} / ${userInfo[params]}`
@@ -77,8 +77,8 @@ exports.rd = async function (message, sender) {
   if (!userInfo[params]) return '你没有这个技能/属性。';
   let randomNumber = Math.ceil(Math.random() * 20);
   if (randomNumber <= userInfo[params] && randomNumber <= 1) return `${params}大成功: ${randomNumber} / ${userInfo[params]}`
-  if (randomNumber <= userInfo[params] / 5) return `${params}极难成功: ${randomNumber} / ${userInfo[params]}`
-  if (randomNumber <= userInfo[params] / 2) return `${params}困难成功: ${randomNumber} / ${userInfo[params]}`
+  if (randomNumber <= userInfo[params] / 5) return `${params}极限成功: ${randomNumber} / ${userInfo[params]}`
+  if (randomNumber <= userInfo[params] / 2) return `${params}艰难成功: ${randomNumber} / ${userInfo[params]}`
   if (randomNumber <= userInfo[params]) return `${params}成功: ${randomNumber} / ${userInfo[params]}`
 
   if (randomNumber > userInfo[params] && randomNumber >= 20) return `${params}大失败: ${randomNumber} / ${userInfo[params]}`
