@@ -240,7 +240,9 @@ exports.add = async function (message, sender) {
   let userInfo = await mongo.User.findOne({ id: sender.user_id });
   let messageArray = message.split(/[ \.\n\t:;；]/g).filter(el => el);
 
-  if (!userInfo || !userInfo[messageArray[i]]) return '你的这个属性没有被设置'
+  for (let i = 0; i < messageArray.length; i += 2) {
+    if (!userInfo || userInfo[messageArray[i]] === undefined) return `${messageArray[i]}还没有初始值。`
+  }
 
   let userBody = {};
   for (let i = 0; i < messageArray.length; i += 2) {
@@ -260,7 +262,9 @@ exports.dec = async function (message, sender) {
   let userInfo = await mongo.User.findOne({ id: sender.user_id });
   let messageArray = message.split(/[ \.\n\t:;；]/g).filter(el => el);
 
-  if (!userInfo || !userInfo[messageArray[i]]) return '你的这个属性没有被设置'
+  for (let i = 0; i < messageArray.length; i += 2) {
+    if (!userInfo || userInfo[messageArray[i]] === undefined) return `${messageArray[i]}还没有初始值。`
+  }
 
   let userBody = {};
   for (let i = 0; i < messageArray.length; i += 2) {
