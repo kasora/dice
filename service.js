@@ -239,6 +239,9 @@ exports.coc7 = async function (message, sender) {
 exports.add = async function (message, sender) {
   let userInfo = await mongo.User.findOne({ id: sender.user_id });
   let messageArray = message.split(/[ \.\n\t:;；]/g).filter(el => el);
+
+  if (!userInfo || !userInfo[messageArray[i]]) return '你的这个属性没有被设置'
+
   let userBody = {};
   for (let i = 0; i < messageArray.length; i += 2) {
     userBody[messageArray[i]] = Math.floor(userInfo[messageArray[i]]) + Math.floor(messageArray[i + 1]);
@@ -256,6 +259,9 @@ exports.add = async function (message, sender) {
 exports.dec = async function (message, sender) {
   let userInfo = await mongo.User.findOne({ id: sender.user_id });
   let messageArray = message.split(/[ \.\n\t:;；]/g).filter(el => el);
+
+  if (!userInfo || !userInfo[messageArray[i]]) return '你的这个属性没有被设置'
+
   let userBody = {};
   for (let i = 0; i < messageArray.length; i += 2) {
     userBody[messageArray[i]] = Math.floor(userInfo[messageArray[i]]) - Math.floor(messageArray[i + 1]);
@@ -295,7 +301,7 @@ exports.save = async function (message, sender) {
 
 exports.listSave = async function (message, sender) {
   let saveList = await mongo.Save.find({ id: sender.user_id }, { saveName: 1 }).toArray();
-  return saveList.length ?`你目前存在如下存档: \n${saveList.map(el => el.saveName).join('\n')}`:'你还没有任何存档'
+  return saveList.length ? `你目前存在如下存档: \n${saveList.map(el => el.saveName).join('\n')}` : '你还没有任何存档'
 }
 
 exports.delSave = async function (message, sender) {
