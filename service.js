@@ -418,15 +418,14 @@ exports.help = async function (message, sender) {
   let messageArray = message.split(/[ \.\n\t:;；]/g).filter(el => el);
   if (messageArray.length) {
     return '\n' + [
-      `path: .${messageArray[0]}`,
-      `label:`,
-      `${routes[messageArray[0]].label}`,
+      `命令: .${messageArray[0]}`,
+      `用途: ${routes[messageArray[0]].label}`,
     ].join('\n')
   }
   let labels = Object.keys(routes).map(routeName => {
     return [
-      `path : .${routeName}`,
-      `label: ${routes[routeName].label}`,
+      `命令: .${routeName}`,
+      `用途: ${routes[routeName].label}`,
     ].join('\n')
   })
 
