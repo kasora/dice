@@ -14,9 +14,11 @@ exports.set = async function (message, sender) {
   let userBody = {};
   let successMessage = [];
   for (let i = 0; i < messageArray.length; i += 2) {
+    if (messageArray[i] === undefined || messageArray[i + 1] === undefined) continue;
     userBody[messageArray[i]] = messageArray[i + 1];
     successMessage.push(`${messageArray[i]}: ${messageArray[i + 1]}`);
   }
+  if (!successMessage.length) return '你什么都没有设置哦。请使用 .help set 查看使用方式'
   await mongo.User.updateOne(
     { id: sender.user_id },
     { $set: userBody },
