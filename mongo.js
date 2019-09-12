@@ -25,6 +25,7 @@ let mongoConnect = async () => {
     // 绑定快捷路径
     exports.User = _db.collection('user');
     exports.Save = _db.collection('save');
+    exports.WhiteList = _db.collection('whiteList');
 
     return _db;
   } catch (err) {

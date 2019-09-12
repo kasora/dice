@@ -18,6 +18,12 @@
 - `.arknights`: 夹带私货。明日方舟公开招募筛选，给入公开招募标签，给出最优选择。例如`.arknights 男性干员 防护 重装干员 医疗干员 生存`。
 - `.help`: 获取某条命令的帮助。使用方式为`.help xx`。例如`.help get`。如果不加参数即为获取全部帮助。例如`.help`。
 
+# 管理员命令
+- `.allowgroup`: bot 管理员限定 - 允许某些群添加这个 bot。例如`.allowgroup 12345678`
+- `.removegroup`: bot 管理员限定 - 让 bot 退出某些群，同时不再允许该群添加本 bot。例如`.removegroup 12345678`
+- `.allowfriend`: bot 管理员限定 - 允许某些人添加这个 bot 为好友。例如`.allowfriend 12345678`
+- `.removefriend`: bot 管理员限定 - 不再允许某些人添加这个 bot 为好友。例如`.removefriend 12345678`
+
 # 搭建
 - 搭建 coolq-http-api 的环境。推荐使用 Docker。参照[这里](https://cqhttp.cc/docs/4.10/#/Docker)
 - 根据你在 Docker 中传入的参数，对应的修改 `config.sample.js`，并将其改名为 `config.js`

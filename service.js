@@ -341,6 +341,79 @@ exports.import = async function (message, sender) {
   return `取出成功，你的人物卡已被覆盖。` + await exports.get('', sender);
 }
 
+exports.allowGroup = async function (message, sender) {
+  if (!utils.isAdmin(sender.user_id)) {
+    return '你在想🍑。'
+  }
+  let messageArray = message.split(/[ \.\n\t:;；]/g).filter(el => el);
+  try {
+    messageArray = messageArray.map((groupId) => parseInt(groupId, 10));
+  } catch (err) {
+    return '传入的群号不合规哦';
+  }
+  mongo.WhiteList.insertMany(messageArray.map(groupId => ({
+    id: groupId,
+    type: 'group',
+    operatorId: sender.user_id,
+    createdAt: new Date()
+  })));
+
+  return '添加成功';
+}
+
+exports.removeGroup = async function (message, sender) {
+  if (!utils.isAdmin(sender.user_id)) {
+    return '你在想🍑。'
+  }
+  let messageArray = message.split(/[ \.\n\t:;；]/g).filter(el => el);
+  try {
+    messageArray = messageArray.map((groupId) => parseInt(groupId, 10));
+  } catch (err) {
+    return '传入的群号不合规哦';
+  }
+  await mongo.WhiteList.deleteMany({ groupId: { $in: messageArray }, type: 'group' });
+  let groupList = await utils.getGroupList();
+  messageArray = messageArray.filter(groupId => groupList.map(groupInfo => groupInfo.group_id).includes(groupId));
+  await Promise.all(messageArray.map(groupId => utils.leaveGroup(groupId)));
+
+  return '移除成功。'
+}
+
+exports.allowFriend = async function (message, sender) {
+  if (!utils.isAdmin(sender.user_id)) {
+    return '你在想🍑。'
+  }
+  let messageArray = message.split(/[ \.\n\t:;；]/g).filter(el => el);
+  try {
+    messageArray = messageArray.map((groupId) => parseInt(groupId, 10));
+  } catch (err) {
+    return '传入的QQ号不合规哦';
+  }
+  mongo.WhiteList.insertMany(messageArray.map(groupId => ({
+    id: groupId,
+    type: 'friend',
+    operatorId: sender.user_id,
+    createdAt: new Date()
+  })));
+
+  return '添加成功';
+}
+
+exports.removeFriend = async function (message, sender) {
+  if (!utils.isAdmin(sender.user_id)) {
+    return '你在想🍑。'
+  }
+  let messageArray = message.split(/[ \.\n\t:;；]/g).filter(el => el);
+  try {
+    messageArray = messageArray.map((groupId) => parseInt(groupId, 10));
+  } catch (err) {
+    return '传入的QQ号不合规哦';
+  }
+  await mongo.WhiteList.deleteMany({ groupId: { $in: messageArray }, type: 'friend' });
+
+  return '移除成功。'
+}
+
 exports.arknights = async function (message, sender) {
   let tagList = message.split(' ');
   if (tagList.length > 6) return '标签太多了啊，朋友'
@@ -418,18 +491,18 @@ exports.arknights = async function (message, sender) {
 
 exports.help = async function (message, sender) {
   let messageArray = message.split(/[ \.\n\t:;；]/g).filter(el => el);
-  if (messageArray.length) {
-    return '\n' + [
-      `命令: .${messageArray[0]}`,
-      `用途: ${routes[messageArray[0]].label}`,
-    ].join('\n')
-  }
-  let labels = Object.keys(routes).map(routeName => {
-    return [
-      `命令: .${routeName}`,
-      `用途: ${routes[routeName].label}`,
-    ].join('\n')
-  })
+  let opt = Object.keys(routes)
+    .filter(routeName => {
+      // 给入参数则强行按参数查询
+      if (messageArray.length) {
+        return messageArray.includes(routeName);
+      }
+      // 无参数则默认显示全部（除了管理员命令）
+      return !routes[routeName].invisible
+    })
+    .map(routeName => {
+      return `.${routeName}: ${routes[routeName].label}`;
+    });
 
-  return '\n' + labels.join('\n\n');
+  return '\n' + opt.join('\n');
 }

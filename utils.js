@@ -20,6 +20,26 @@ const sendMessage = async (messageBody) => {
 }
 exports.sendMessage = sendMessage;
 
+const getGroupList = async () => {
+  let agentRes = await agent.get(`${config.coolq.host}:${config.coolq.port}/get_group_list`);
+  if (agentRes.body.status !== 'ok') {
+    console.error(agentRes.body);
+  }
+  return agentRes.body.data;
+}
+exports.getGroupList = getGroupList;
+
+const leaveGroup = async (groupId) => {
+  con
+  let agentRes = await agent.post(`${config.coolq.host}:${config.coolq.port}/set_group_leave`).send({
+    group_id: groupId,
+  });
+  if (agentRes.body.status !== 'ok') {
+    console.error(agentRes.body);
+  }
+}
+exports.leaveGroup = leaveGroup;
+
 let randomSplit = (value, part) => {
   let pointList = [value];
   while (pointList.length < part) {
@@ -60,3 +80,8 @@ let random = (from, to) => {
   return Math.floor(Math.random() * max) + from;
 }
 exports.random = random;
+
+let isAdmin = (userId) => {
+  return config.adminIdList.includes(userId);
+}
+exports.isAdmin = isAdmin;
