@@ -13,7 +13,7 @@ exports.set = {
 };
 
 exports.del = {
-  label: '移除一个或多个属性或技能。使用方式为.del xx xx。例如.del 力量 智力。如果不加参数即为获取自身所有属性。例如.del',
+  label: '移除一个或多个属性或技能。使用方式为.del xx xx。例如.del 力量 智力。如果不加参数即为移除自身所有属性。例如.del',
   handler: service.del,
 };
 
