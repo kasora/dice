@@ -20,7 +20,7 @@ let mongoConnect = async () => {
     if (username && password) {
       linkUrl = `mongodb://${username}:${password}@${host}:${port}/${databaseName}`;
     }
-    _db = (await MongoClient.connect(linkUrl, { useNewUrlParser: true })).db(databaseName);
+    _db = (await MongoClient.connect(linkUrl, { useNewUrlParser: true, useUnifiedTopology: true })).db(databaseName);
 
     // 绑定快捷路径
     exports.User = _db.collection('user');

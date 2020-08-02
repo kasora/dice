@@ -5,7 +5,6 @@ exports = module.exports = {};
 let mongo = require('./mongo');
 let utils = require('./utils');
 let routes = require('./route');
-let arknightsMemberData = require('./data/arknights_member.json');
 let defaultSkill = require('./data/default_skill.json');
 
 
@@ -412,81 +411,6 @@ exports.removeFriend = async function (message, sender) {
   await mongo.WhiteList.deleteMany({ groupId: { $in: messageArray }, type: 'friend' });
 
   return '移除成功。'
-}
-
-exports.arknights = async function (message, sender) {
-  let tagList = message.split(' ');
-  if (tagList.length > 6) return '标签太多了啊，朋友'
-
-  let getMap = (tagList) => {
-    let tagMap = [[]];
-    for (let tag of tagList) {
-      let tempMap = Array.from(tagMap);
-      tempMap = tempMap.map(el => Array.from(el));
-      tempMap.forEach(el => el.push(tag));
-      tagMap = tagMap.concat(tempMap);
-    }
-    tagMap.shift()
-    return tagMap;
-  }
-
-  let getMember = (tagList) => {
-    let memberSet = new Set();
-    let minStar = 6;
-    for (let memberInfo of arknightsMemberData) {
-      let flag = true;
-      for (let tag of tagList) {
-        if (!memberInfo.tags.includes(tag)) {
-          flag = false;
-          break;
-        }
-      }
-      if (flag) {
-        if (memberInfo.star < minStar) {
-          minStar = memberInfo.star;
-        }
-        memberSet.add(memberInfo);
-      }
-    }
-    let memberList = Array.from(memberSet);
-    memberList.sort((a, b) => b.star - a.star);
-    if (!tagList.includes('高级资深干员')) {
-      memberList = memberList.filter(el => el.star < 6);
-    }
-    return {
-      minStar: minStar,
-      tagList: tagList,
-      percent: memberList.length ? memberList.filter(el => el.star >= 4).length / memberList.length : 0,
-      memberList: memberList.map(el => `${el.star}星 ${el.name}`),
-    };
-  }
-
-  let tagMap = getMap(tagList);
-  let memberList = tagMap.map(el => getMember(el));
-  let output = memberList.filter(el => el.minStar > 3 && el.memberList.length !== 0);
-  if (output.length === 0) {
-    memberList.sort((a, b) => {
-      if (b.percent - a.percent === 0) return a.tagList.length - b.tagList.length;
-      return b.percent - a.percent;
-    });
-    if (memberList.length) {
-      memberList = memberList.filter(el => Math.abs(el.percent - memberList[0].percent) < 0.000001)
-    }
-    let optStr = `当前的标签没法组合出纯4星+的干员`;
-    if (memberList.length) {
-      optStr += '，但是可以尝试下列组合\n';
-    }
-    let opt = memberList.map(el => `最低${el.minStar}星 - ${el.tagList.join(' + ')}: ${el.memberList.join(' / ')}`)
-    opt = opt.join('\n');
-    return optStr + opt;
-  }
-  output.sort((a, b) => {
-    if (b.minStar - a.minStar === 0) return a.tagList.length - b.tagList.length;
-    return b.minStar - a.minStar
-  });
-  output = output.map(el => `最低${el.minStar}星 - ${el.tagList.join(' + ')}: ${el.memberList.join(' / ')}`)
-  output = output.join('\n');
-  return output;
 }
 
 exports.help = async function (message, sender) {

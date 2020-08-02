@@ -91,11 +91,6 @@ exports.removefriend = {
   invisible: true,
 };
 
-exports.arknights = {
-  label: '夹带私货。给入公开招募标签，给出最优选择。例如.arknights 男性干员 防护 重装干员 医疗干员 生存',
-  handler: service.arknights,
-};
-
 exports.help = {
   label: '获取某条命令的帮助。使用方式为.help xx。例如.help get。如果不加参数即为获取全部帮助。例如.help',
   handler: service.help,
